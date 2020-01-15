@@ -33,6 +33,6 @@ public class ObstacleMovement : MonoBehaviour
 	private void Update()
 	{
 		// Move obstacle on Z axis (towards player)
-		GetComponent<Rigidbody>().AddForce(0f, 0f, -force);
+		GetComponent<Rigidbody>().AddForce(0f, 0f, -force/2);
 	}
 }

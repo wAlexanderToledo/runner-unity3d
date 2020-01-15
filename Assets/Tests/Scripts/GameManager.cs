@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using System.Collections;
@@ -23,6 +23,12 @@ public class GameManager : MonoBehaviour
 	public GameObject deathOverlayUI;
 
 	public Fade fade;
+	public static bool isTesting;
+
+	public static void SetIsTestingTrue()
+	{
+		isTesting = true;
+	}
 
 	IEnumerator DeathOverlayTransition()
 	{
@@ -76,15 +82,44 @@ public class GameManager : MonoBehaviour
 
 	private void Spawn()
 	{
-		int i;
-
+		/* int i;
+		//MISTAKE, THEY CAN COLLIDE FROM THE START
 		// Spawn 2 new obstacles
 		for (i = -7; i < 7; i += 7)
 		{
 			Instantiate(obstaclePrefab,
 			            new Vector3(Mathf.Floor(Random.Range(i, i + 7)), 1, obstacleStartX),
 			            Quaternion.identity, obstacles);
+		}*/
+		int x1 = Random.Range(-6, 1);
+		GameObject obs1 = Instantiate(obstaclePrefab,
+			            new Vector3(x1, 1, obstacleStartX),
+			            Quaternion.identity, obstacles);
+		obs1.tag = "Obstacle";
+		Rigidbody obs1RB = obs1.GetComponent<Rigidbody>();
+		obs1RB.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
+		obs1RB.interpolation = RigidbodyInterpolation.Interpolate;
+		int x2;
+		if(x1 < 0)
+		{
+			x2 = Random.Range(1, 7);
 		}
+		else
+		{
+			x2 = Random.Range(2, 7);
+		}
+		GameObject obs2 = Instantiate(obstaclePrefab,
+					new Vector3(x2, 1, obstacleStartX),
+					Quaternion.identity, obstacles);
+		obs2.tag = "Obstacle";
+		Rigidbody obs2RB = obs2.GetComponent<Rigidbody>();
+		obs2RB.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
+		obs2RB.interpolation = RigidbodyInterpolation.Interpolate;
+		//----------------------------------------------------------------------------------------------------------------------
+		// Determine the best available approximation of the number 
+		// of bytes currently allocated in managed memory.
+		//Debug.Log("Total Memory: " + ((System.GC.GetTotalMemory(false)/1024.0f)/1024.0f).ToString("n2") + " MB");
+
 	}
 
 	private void Update()
@@ -120,6 +155,10 @@ public class GameManager : MonoBehaviour
 		fade.BeginFade(-1);
 
 		// Invoke obstacle spawning, frequency depends on difficulty
-		InvokeRepeating("Spawn", 1f, 0.5f / difficulty);
+		InvokeRepeating("Spawn", 1f, 0.75f/difficulty);
+		if (isTesting)
+		{
+			movement.isTesting = true;
+		}
 	}
 }
